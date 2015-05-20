@@ -10,47 +10,39 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-public class PanneauMenu extends PanneauBase {
+import Automatitem.ItemBasic;
+import Automatitem.ItemGroup;
+import Automatitem.RepaintListener;
+
+public class PanneauMenu extends PanneauBase implements RepaintListener {
+	
+	private static final long serialVersionUID = 1L;
+	
+	private ItemGroup itemGroup;
 
 	public PanneauMenu(Dimension taille) {
 		super(taille);
 		setFocusable(true);
 		requestFocusInWindow();
-		y = 0;
 		
-		addKeyListener(new KeyListener() {
-			public void keyPressed(KeyEvent e) {
-				if(e.getKeyCode() == KeyEvent.VK_DOWN) {
-					y++;
-					repaint();
-				} else if(e.getKeyCode() == KeyEvent.VK_UP) {
-					y--;
-					repaint();
-				}
-			}
-			
-			public void keyReleased(KeyEvent e) {}
-			
-			public void keyTyped(KeyEvent e) {}
-		});
+		itemGroup = new ItemGroup();
+		
+		addKeyListener(itemGroup);
+		addMouseListener(itemGroup);
+		addMouseMotionListener(itemGroup);
+		
+		itemGroup.addItem(new ItemBasic(5,10,5,10));
+		itemGroup.addItem(new ItemBasic(20,40,30,40));
+		itemGroup.addItem(new ItemBasic(70,90,100,130));
+		
+		itemGroup.changeRepaintListener(this);
 	}
 	
 	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
 		g.setColor(Color.BLUE);
 		g.fillRect(0, 0, getWidth(), getHeight());
-		//g.drawImage(new ImageIcon("bouton.bmp").getImage(), 20, 20, null);
-		/*try {
-			g.drawImage(ImageIO.read(new File("bouton.bmp")), 0, 0, null);
-		} catch(IOException e) {
-			e.printStackTrace();
-		}*/
-		System.out.println("Dessin avec y =" + y);
-		g.setColor(Color.RED);
-		g.fillRect(10,15*y,10,10);
 		
+		itemGroup.paintComponent(g);
 	}
-	
-	private int y;
-	
-	private static final long serialVersionUID = 1L;
 }
