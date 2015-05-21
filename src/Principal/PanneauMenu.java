@@ -12,6 +12,7 @@ import javax.imageio.ImageIO;
 
 import Automatitem.ItemBasic;
 import Automatitem.ItemGroup;
+import Automatitem.ItemText;
 import Automatitem.RepaintListener;
 
 public class PanneauMenu extends PanneauBase implements RepaintListener {
@@ -31,9 +32,12 @@ public class PanneauMenu extends PanneauBase implements RepaintListener {
 		addMouseListener(itemGroup);
 		addMouseMotionListener(itemGroup);
 		
-		itemGroup.addItem(new ItemBasic(5,10,5,10));
-		itemGroup.addItem(new ItemBasic(20,40,30,40));
-		itemGroup.addItem(new ItemBasic(70,90,100,130));
+		String textes[] = {"Jouer", "Paramètres", "Quitter"};
+		
+		for(int i=0 ; i<textes.length ; i++)
+			itemGroup.addItem(new ItemText(0, 100, 40*i, 40*i+30, textes[i]));
+		
+		itemGroup.setCoords(30, 20);
 		
 		itemGroup.changeRepaintListener(this);
 	}
