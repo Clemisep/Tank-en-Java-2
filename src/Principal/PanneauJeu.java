@@ -3,17 +3,22 @@ package Principal;
 import java.awt.Dimension;
 import java.awt.Graphics;
 
+import javax.swing.JFrame;
+
+import Tanks.Tank;
 import Ensemble.Ensemble;
 import Ensemble.Maillon;
 
 public class PanneauJeu extends PanneauBase {
 	private static final long serialVersionUID = 1L;
-
-	public PanneauJeu(Dimension taille, Tank[] tanks, Sol sol) {
+	private JFrame fen;
+	
+	public PanneauJeu(JFrame fen, Dimension taille, Tank[] tanks, Sol sol) {
 		super(taille);
 		
-		ensembleDesElementsGraphiques = new Ensemble<Affichable>();
+		this.fen = fen;
 		
+		ensembleDesElementsGraphiques = new Ensemble<Affichable>();
 		ensembleDesElementsGraphiques.ajouter(sol);
 		
 		for(Affichable tank: tanks) {
