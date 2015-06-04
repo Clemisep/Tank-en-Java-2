@@ -1,7 +1,6 @@
 package Principal;
 
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Graphics;
 
@@ -10,10 +9,6 @@ import java.awt.Graphics;
 //import javax.imageio.ImageIO;
 
 
-
-
-
-import javax.swing.JFrame;
 
 import Automatitem.ClickListener;
 import Automatitem.ItemGroup;
@@ -42,7 +37,7 @@ public class PanneauMenu extends PanneauBase implements RepaintListener {
 		addMouseListener(itemGroup);
 		addMouseMotionListener(itemGroup);
 		
-		sol = new Sol();
+		sol = new Sol(taille);
 		equipe1 = new Equipe(1);
 		equipe2 = new Equipe(1);
 		Tank[] tanks = {new PetitTank(equipe1, new Position(30, 200), 100), new PetitTank(equipe2, new Position(800, 250), 100)};
