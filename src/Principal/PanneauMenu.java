@@ -43,8 +43,18 @@ public class PanneauMenu extends PanneauBase implements RepaintListener {
 		equipe1 = new Equipe(1);
 		equipe2 = new Equipe(1);
 		
+		RepaintListener repaintListener = new RepaintListener() {
+
+			@Override
+			public void repaint() {
+				PanneauMenu.this.repaint();
+				System.out.println("repaint");
+			}
+			
+		};
+		
 		try {
-			Tank[] tanks = {new Tank1(sol, equipe1, 40, 100), new Tank1(sol, equipe2, 800, 100)};
+			Tank[] tanks = {new Tank1(sol, equipe1, 40, 100, repaintListener), new Tank1(sol, equipe2, 800, 100, repaintListener)};
 			
 			this.tanks = tanks;
 			
@@ -53,7 +63,11 @@ public class PanneauMenu extends PanneauBase implements RepaintListener {
 	
 				@Override
 				public void click() {
+					// TODO Remettre les instructions correctes
 					fen.remplacerPar(new PanneauJeu(fen, taille, tanks, sol));
+					//JFrame fen = new JFrame();
+					//fen.getContentPane().add(new PanneauJeu(fen, taille, tanks, sol));
+					//fen.setVisible(true);
 				}
 				
 			});
