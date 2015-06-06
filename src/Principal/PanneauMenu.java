@@ -32,7 +32,6 @@ public class PanneauMenu extends PanneauBase implements RepaintListener {
 		super(taille);
 		setFocusable(true);
 		requestFocusInWindow();
-		
 		itemGroup = new ItemGroup();
 		
 		addKeyListener(itemGroup);
