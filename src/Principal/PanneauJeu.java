@@ -4,8 +4,6 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 import javax.swing.JFrame;
 
@@ -48,10 +46,11 @@ public class PanneauJeu extends PanneauBase {
 		addKeyListener(new KeyListener() {
 			
 			private ThreadDeplacement threadDeplacement;
+			private ThreadBougerCanon threadBougerCanon;
 			
 			@Override
 			public void keyPressed(KeyEvent e) {
-				// TODO Auto-generated method stub
+				// TODO Ajouter les touches haut et bas pour le canon
 				int keyCode = e.getKeyCode();
 				
 				if(keyCode == KeyEvent.VK_LEFT || keyCode == KeyEvent.VK_RIGHT) {
@@ -60,17 +59,26 @@ public class PanneauJeu extends PanneauBase {
 						threadDeplacement = new ThreadDeplacement(tankEnCours, sensDeDeplacement);
 						threadDeplacement.start();
 					}
+				} else if(keyCode == KeyEvent.VK_UP || keyCode == KeyEvent.VK_DOWN) {
+					if(threadBougerCanon == null) {
+						int sens = (keyCode == KeyEvent.VK_UP) ? -1 : 1;
+						threadBougerCanon = new ThreadBougerCanon(tankEnCours, sens);
+						threadBougerCanon.start();
+					}
 				}
 			}
 
 			@Override
 			public void keyReleased(KeyEvent e) {
-				// TODO Auto-generated method stub
+				// TODO Interdire le bourrinage permettant d’éviter le délai d’attente
 				int keyCode = e.getKeyCode();
 				
 				if(threadDeplacement != null && (keyCode == KeyEvent.VK_LEFT || keyCode == KeyEvent.VK_RIGHT)) {
 					threadDeplacement.interrupt();
 					threadDeplacement = null;
+				} else if(threadBougerCanon != null && (keyCode == KeyEvent.VK_UP || keyCode == KeyEvent.VK_DOWN)) {
+					threadBougerCanon.interrupt();
+					threadBougerCanon = null;
 				}
 			}
 

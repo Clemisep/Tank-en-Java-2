@@ -2,10 +2,9 @@ package Tanks;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
 
 import Automatitem.RepaintListener;
 import Ensemble.Ensemble;
@@ -18,24 +17,32 @@ public abstract class TankBasic implements Tank {
 	private Position position;
 	private int vie;
 	private Equipe equipe;
-	private BufferedImage image;
+	private BufferedImage imageTank, imageCanon;
 	
-	private final Position coordInfGauche, coordInfDroit, milieuAppui;
+	private final int abscisseMilieuAppui;
 	private Sol sol;
 	private RepaintListener repaintListener;
+	private double angleCanon = 0;
 	
-	Ensemble<Position> ensembleContour;
+	private Position accrocheTank, accrocheCanon;
+	
+	private Ensemble<Position> ensembleContour;
 	
 	/**
 	 * 
 	 * @param equipe Équipe dans laquelle se trouve le joueur contrôlant le tank.
 	 * @param position Position du tank sur la carte.
 	 * @param vie Barre de vie initiale.
-	 * @param image Image du tank à afficher sur la carte.
-	 * @param coordInfGauche Premier point d’appui du tank (coïncide avec sa position sur la carte).
-	 * @param coordInfDroit Deuxième point d’appui du tank.
+	 * @param imageTank Image du tank à afficher sur la carte.
+	 * @param imageCanon Image du canon qui subira des rotations pour viser.
+	 * @param abscisseMilieuAppui Abscisse du milieu du tank dans sa propre image.
+	 * @param accrocheTank Point d’accroche entre le tank et le canon dans l’image du tank.
+	 * @param accrocheCanon Point d’accroche entre le tank et le canon dans l’image du canon.
+	 * @param repaintListener Écouteur à appeler en cas de modification nécessitant de redessiner.
 	 */
-	public TankBasic(Sol sol, Equipe equipe, int abscisse, int vie, BufferedImage image, Position coordInfGauche, Position coordInfDroit, RepaintListener repaintListener) {
+	public TankBasic(Sol sol, Equipe equipe, int abscisse, int vie, BufferedImage imageTank, BufferedImage imageCanon, int abscisseMilieuAppui,
+			Position accrocheTank, Position accrocheCanon,
+			RepaintListener repaintListener) {
 		
 		// ---------- INITIALISATIONS ------------------
 		
@@ -44,21 +51,23 @@ public abstract class TankBasic implements Tank {
 		 * Position du tank correspondant au coin supérieur gauche de l'image sur la carte.
 		 */
 		this.vie = vie;
-		this.image = image;
-		this.coordInfGauche = coordInfGauche;
-		this.coordInfDroit = coordInfDroit;
-		this.milieuAppui = new Position((coordInfGauche.recX()+coordInfDroit.recX())/2, (coordInfGauche.recY()+coordInfDroit.recY())/2);
+		this.imageTank = imageTank;
+		this.imageCanon = imageCanon;
+		this.abscisseMilieuAppui = abscisseMilieuAppui;
 		this.sol = sol;
 		this.repaintListener = repaintListener;
 		
+		this.accrocheTank = accrocheTank;
+		this.accrocheCanon = accrocheCanon;
+		
 		
 		// ----------- CALCUL DU CONTOUR -----------------
-		// TODO
+		
 		int x,y=0;
 		
 		externe:
-		for(x=0 ; x<image.getWidth() ; x++)
-			for(y=0 ; y<image.getHeight() ; y++)
+		for(x=0 ; x<imageTank.getWidth() ; x++)
+			for(y=0 ; y<imageTank.getHeight() ; y++)
 				if(appartientAuTank(x, y))
 					break externe;
 		
@@ -69,29 +78,10 @@ public abstract class TankBasic implements Tank {
 		int x0 = x, y0 = y;
 		int dx = 0, dy = -1; // direction initiale vers le haut correspondant à une case vide c’est-à-dire ne faisant pas partie du tank
 		
-		/*
-		 * DEBUG
-		 * 
-		JFrame fen = new JFrame() {
-			private static final long serialVersionUID = 1L;
-			private JPanel panneau = new JPanel() {
-				public void paintComponent(Graphics g) {
-					for(Position p : ensembleContour)
-						g.fillRect(p.recX(), p.recY(), 1, 1);
-				}
-			};
-			
-			{
-				getContentPane().add(panneau);
-			}
-		};
-		
-		fen.setVisible(true);*/
 		
 		int n=0;
 		
 		do {
-			System.out.println("Contour en "+x+","+y+" vers "+dx+","+dy);
 			int vx = -dy, vy = dx; // direction vers laquelle nous allons à priori
 			
 			// si elle est vide, elle devient notre nouvelle direction sommet vide
@@ -114,8 +104,6 @@ public abstract class TankBasic implements Tank {
 				y = y+dy;
 				ensembleContour.ajouter(new Position(x, y));
 			}
-			
-			//fen.repaint();
 			
 			n++;
 			
@@ -145,10 +133,10 @@ public abstract class TankBasic implements Tank {
 	private boolean appartientAuTank(int x, int y) {
 		
 		// Si l’on est en dehors de l’image, l’on n’est pas dans le tank
-		if(x<0 || x>=image.getWidth() || y<0 || y>=image.getHeight())
+		if(x<0 || x>=imageTank.getWidth() || y<0 || y>=imageTank.getHeight())
 			return false;
 		
-		Color couleur =  new Color(image.getRGB(x, y), true); // Extraction de la couleur avec transparence
+		Color couleur =  new Color(imageTank.getRGB(x, y), true); // Extraction de la couleur avec transparence
 		int transparence = couleur.getAlpha(); // Extraction de la transparence
 		return transparence == 255; // Renvoie vrai si la couleur est opaque
 	}
@@ -161,26 +149,6 @@ public abstract class TankBasic implements Tank {
 	 */
 	private boolean positionValide(Position position) {
 		
-		// TODO
-		
-		int x0 = position.recX(), y0 = position.recY();
-		/*
-		// On regarde tous les points du tank déplacé sur la position et on voit s'il vont dans le décors.
-		for(int x=0 ; x<image.getWidth() ; x++)
-			for(int y=0 ; y<image.getHeight() ; y++) {
-				
-				// S'il y a du décors à cet endroit
-				if(!sol.estLibre(x0+x, y0+y)) {
-					
-					
-					// S'il y a en plus un morceau de tank, il y a un conflit donc on renvoie une réponse négative.
-					if(appartientAuTank(x, y)) {
-						System.out.println("positionValide() dit : ça coince en "+(x0+x)+","+(y0+y)+" ; "+x+","+y);
-						return false;
-					}
-				}
-			}*/
-		
 		for(Position p : ensembleContour)
 			if(!sol.estLibre(position.recX()+p.recX(), position.recY()+p.recY()))
 				return false;
@@ -189,7 +157,7 @@ public abstract class TankBasic implements Tank {
 	
 	
 	public void placer(int abscisseMilieu) {
-		int x = abscisseMilieu - milieuAppui.recX();
+		int x = abscisseMilieu - abscisseMilieuAppui;
 		int y=0;
 		
 		// On descend le tank tant que la position est valide
@@ -212,7 +180,7 @@ public abstract class TankBasic implements Tank {
 		
 		int x = position.recX() + sens;
 		
-		for(int y=0 ; y>-15 ; y--) {
+		for(int y=0 ; y>-5 ; y--) {
 			if(positionValide(new Position(x, y))) {
 				while(positionValide(new Position(x, y+1))) y++;
 				
@@ -236,13 +204,18 @@ public abstract class TankBasic implements Tank {
 	
 	@Override
 	public int bougerCanon(int sens) {
-		// TODO Auto-generated method stub
-		return 10;
+		angleCanon += (double)sens / 20;
+		redessiner();
+		return 50;
 	}
 
 	@Override
 	public void afficher(Graphics g) {
-		g.drawImage(image, position.recX(), position.recY(), null);
+		g.drawImage(imageTank, position.recX(), position.recY(), null);
+		
+		AffineTransform tx = AffineTransform.getRotateInstance(angleCanon, accrocheCanon.recX(), accrocheCanon.recY());
+		AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
+		g.drawImage(op.filter(imageCanon, null), position.recX()+accrocheTank.recX(), position.recY()+accrocheTank.recY(), null);
 	}
 
 	@Override

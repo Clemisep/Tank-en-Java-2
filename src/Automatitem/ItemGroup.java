@@ -73,7 +73,6 @@ public class ItemGroup implements KeyListener, MouseListener, MouseMotionListene
 	
 	@Override
 	public void keyPressed(KeyEvent e) {
-		// TODO Auto-generated method stub
 		int keyCode = e.getKeyCode();
 		
 		if(keyCode == KeyEvent.VK_LEFT || keyCode == KeyEvent.VK_UP) {
@@ -109,10 +108,7 @@ public class ItemGroup implements KeyListener, MouseListener, MouseMotionListene
 	}
 
 	@Override
-	public void mouseEntered(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void mouseEntered(MouseEvent arg0) {}
 
 	@Override
 	public void mouseExited(MouseEvent mouseEvent) {
@@ -135,22 +131,13 @@ public class ItemGroup implements KeyListener, MouseListener, MouseMotionListene
 	}
 	
 	@Override
-	public void mousePressed(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void mousePressed(MouseEvent arg0) {}
 
 	@Override
-	public void mouseReleased(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void mouseReleased(MouseEvent arg0) {}
 
 	@Override
-	public void mouseDragged(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void mouseDragged(MouseEvent arg0) {}
 
 	@Override
 	public void mouseMoved(MouseEvent mouseEvent) {

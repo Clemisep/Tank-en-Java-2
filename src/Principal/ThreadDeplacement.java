@@ -23,7 +23,7 @@ public class ThreadDeplacement extends Thread {
 			while(true) sleep(tank.deplacer(sensDeplacement));
 			
 		} catch(InterruptedException e) {
-			// On interrompt la boucle infinie si on nous demande de s’arrêter.
+			// On interrompt la boucle infinie si on nous demande de nous arrêter.
 		}
 	}
 }
