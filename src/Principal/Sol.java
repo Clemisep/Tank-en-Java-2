@@ -8,6 +8,8 @@ import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.util.Random;
 
+import Ensemble.Maillon;
+
 public class Sol implements Affichable {
 	
 	private final int xTaille, yTaille;
@@ -18,14 +20,20 @@ public class Sol implements Affichable {
 	private final int maxAltitudePointeBord;
 	private final int minAltitudePointeMilieu;
 	private final int maxAltitudePointeMilieu;
-	private final int minAltitudeColBord;
+	/*private final int minAltitudeColBord;
 	private final int maxAltitudeColBord;
 	private final int minAltitudeColMilieu;
-	private final int maxAltitudeColMilieu;
+	private final int maxAltitudeColMilieu;*/
+	private ComposableElementsGraphiques composable;
+	private Maillon<Affichable> maillon;
 	
 	//private final int minAltitudePointeBord;
 	
-	public Sol(Dimension dimension) {
+	public Sol(Dimension dimension, ComposableElementsGraphiques composable) {
+		
+		this.composable = composable;
+		
+		maillon = composable.ajouterElementGraphique(this);
 		
 		xTaille = dimension.width;
 		yTaille = dimension.height;
@@ -43,10 +51,10 @@ public class Sol implements Affichable {
 		maxAltitudePointeBord = yTaille/3;
 		minAltitudePointeMilieu = 2*yTaille/3;
 		maxAltitudePointeMilieu = 3*yTaille/4;
-		minAltitudeColBord = yTaille/10;
+		/*minAltitudeColBord = yTaille/10;
 		maxAltitudeColBord = yTaille/8;
 		minAltitudeColMilieu = yTaille/2;
-		maxAltitudeColMilieu = 3*yTaille/5;
+		maxAltitudeColMilieu = 3*yTaille/5;*/
 		
 		Random hasard = new Random();
 		
@@ -97,14 +105,14 @@ public class Sol implements Affichable {
 	private boolean estAuCentre(int x) {
 		return x >= xTaille/3 && x <= xTaille*2/3;
 	}
-	
+	/*
 	private int recMinAltitudeCol(int x) {
 		return estAuCentre(x) ? minAltitudeColMilieu : minAltitudeColBord;
 	}
 	
 	private int recMaxAltitudeCol(int x) {
 		return estAuCentre(x) ? maxAltitudeColMilieu : maxAltitudeColBord;
-	}
+	}*/
 	
 	private int randInt(Random hasard, int min, int max) {
 		return min + hasard.nextInt(max-min);
@@ -142,6 +150,10 @@ public class Sol implements Affichable {
 		g2.drawImage(image, null, null);
 	}
 	
+	private void repaint() {
+		composable.marquerInvalide();
+	}
+	
 	/**
 	 * Gère automatiquement la destruction du terrain provenant de l’explosion d’un projectile.
 	 * @param position Position du projectile.
@@ -156,7 +168,7 @@ public class Sol implements Affichable {
 				liberer(x, y);
 		}
 		
-		// TODO Mettre ici le processus de destruction du sol
+		repaint();
 	}
 	
 	/**
@@ -209,5 +221,12 @@ public class Sol implements Affichable {
 	 */
 	public int recYTaille() {
 		return yTaille;
+	}
+
+	@Override
+	public void changerComposableElementsGraphiques(ComposableElementsGraphiques composable) {
+		this.composable.supprimerElementGraphique(maillon);
+		this.composable = composable;
+		maillon = composable.ajouterElementGraphique(this);
 	}
 }

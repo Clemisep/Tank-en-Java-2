@@ -4,18 +4,14 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 
-//import java.io.File;
-//import java.io.IOException;
-//import javax.imageio.ImageIO;
-
-
-
 import java.io.IOException;
 
 import Automatitem.ClickListener;
 import Automatitem.ItemGroup;
 import Automatitem.ItemText;
 import Automatitem.RepaintListener;
+import Ensemble.Ensemble;
+import Ensemble.Maillon;
 import Tanks.Tank1;
 import Tanks.Tank;
 
@@ -38,22 +34,12 @@ public class PanneauMenu extends PanneauBase implements RepaintListener {
 		addMouseListener(itemGroup);
 		addMouseMotionListener(itemGroup);
 		
-		sol = new Sol(taille);
+		sol = new Sol(taille, this);
 		equipe1 = new Equipe(1);
 		equipe2 = new Equipe(1);
 		
-		RepaintListener repaintListener = new RepaintListener() {
-
-			@Override
-			public void repaint() {
-				PanneauMenu.this.repaint();
-				System.out.println("repaint");
-			}
-			
-		};
-		
 		try {
-			Tank[] tanks = {new Tank1(sol, equipe1, 40, 100, repaintListener), new Tank1(sol, equipe2, 800, 100, repaintListener)};
+			Tank[] tanks = {new Tank1(sol, equipe1, 40, 100, this), new Tank1(sol, equipe2, 800, 100, this)};
 			
 			this.tanks = tanks;
 			

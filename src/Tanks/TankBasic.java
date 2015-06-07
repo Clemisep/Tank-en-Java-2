@@ -6,13 +6,14 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 
-import Automatitem.RepaintListener;
 import Ensemble.Ensemble;
+import Principal.ComposableElementsGraphiques;
 import Principal.Equipe;
+import Principal.GereComposable;
 import Principal.Position;
 import Principal.Sol;
 
-public abstract class TankBasic implements Tank {
+public abstract class TankBasic extends GereComposable implements Tank {
 	
 	private Position position;
 	private int vie;
@@ -21,7 +22,6 @@ public abstract class TankBasic implements Tank {
 	
 	private final int abscisseMilieuAppui;
 	private Sol sol;
-	private RepaintListener repaintListener;
 	private double angleCanon = 0;
 	
 	private Position accrocheTank, accrocheCanon;
@@ -41,11 +41,11 @@ public abstract class TankBasic implements Tank {
 	 * @param repaintListener Écouteur à appeler en cas de modification nécessitant de redessiner.
 	 */
 	public TankBasic(Sol sol, Equipe equipe, int abscisse, int vie, BufferedImage imageTank, BufferedImage imageCanon, int abscisseMilieuAppui,
-			Position accrocheTank, Position accrocheCanon,
-			RepaintListener repaintListener) {
+			Position accrocheTank, Position accrocheCanon, ComposableElementsGraphiques composable) {
 		
 		// ---------- INITIALISATIONS ------------------
 		
+		super(composable);
 		this.equipe = equipe;
 		/**
 		 * Position du tank correspondant au coin supérieur gauche de l'image sur la carte.
@@ -55,7 +55,6 @@ public abstract class TankBasic implements Tank {
 		this.imageCanon = imageCanon;
 		this.abscisseMilieuAppui = abscisseMilieuAppui;
 		this.sol = sol;
-		this.repaintListener = repaintListener;
 		
 		this.accrocheTank = accrocheTank;
 		this.accrocheCanon = accrocheCanon;
@@ -115,15 +114,6 @@ public abstract class TankBasic implements Tank {
 		placer(abscisse);
 	}
 	
-	public void changeRepaintListener(RepaintListener repaintListener) {
-		this.repaintListener = repaintListener;
-	}
-	
-	
-	private void redessiner() {
-		repaintListener.repaint();
-	}
-	
 	/**
 	 * Permet de savoir si le point de coordonnées (x,y) appartient à la matière du tank.
 	 * @param x
@@ -165,14 +155,14 @@ public abstract class TankBasic implements Tank {
 		
 		position = new Position(x, y);
 		
-		redessiner();
+		marquerInvalide();
 		
 		// TODO Optimiser en commençant la recherche plus bas.
 	}
 	
 	public void placer(Position position) {
 		this.position = position;
-		redessiner();
+		marquerInvalide();
 	}
 	
 	@Override
@@ -201,9 +191,17 @@ public abstract class TankBasic implements Tank {
 	}
 	
 	@Override
-	public int bougerCanon(int sens) {
-		angleCanon += (double)sens / 20;
-		redessiner();
+	public long bougerCanon(int sens) {
+		double nouvelAngle = angleCanon + (double) sens / 20;
+		
+		if(nouvelAngle <= -1.4)
+			angleCanon = -1.4;
+		else if(nouvelAngle >= 1.4)
+			angleCanon = 1.4;
+		else
+			angleCanon = nouvelAngle;
+		
+		marquerInvalide();
 		return 50;
 	}
 
@@ -213,7 +211,7 @@ public abstract class TankBasic implements Tank {
 		
 		AffineTransform tx = AffineTransform.getRotateInstance(angleCanon, accrocheCanon.recX(), accrocheCanon.recY());
 		AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
-		g.drawImage(op.filter(imageCanon, null), position.recX()+accrocheTank.recX(), position.recY()+accrocheTank.recY(), null);
+		g.drawImage(op.filter(imageCanon, null), position.recX()+accrocheTank.recX()-accrocheCanon.recX(), position.recY()+accrocheTank.recY()-accrocheCanon.recY(), null);
 	}
 
 	@Override

@@ -6,7 +6,7 @@ import Automatitem.RepaintListener;
 import Principal.Affichable;
 import Principal.Equipe;
 
-public interface Tank extends Affichable {
+public interface Tank extends Affichable, CanonBougeable {
 	
 	/**
 	 * Fait déplacer le tank si possible.
@@ -22,17 +22,11 @@ public interface Tank extends Affichable {
 	 * @param sens Sens de rotation : 1, vers le bas, -1, vers le haut.
 	 * @return Temps demandé pour réaliser l'action en ms.
 	 */
-	public int bougerCanon(int sens);
+	public long bougerCanon(int sens);
 	
 	public void afficher(Graphics g);
 	
 	public void frapper(double force);
 	
 	public Equipe recEquipe();
-	
-	/**
-	 * Change l’écouteur du tank qui est appelé quand il y a une modification nécessitant de le redessiner.
-	 * @param repaintListener
-	 */
-	public void changeRepaintListener(RepaintListener repaintListener);
 }

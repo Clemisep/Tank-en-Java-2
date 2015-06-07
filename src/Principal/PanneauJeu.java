@@ -8,11 +8,10 @@ import java.awt.event.KeyListener;
 import javax.swing.JFrame;
 
 import Tanks.Tank;
-import Automatitem.RepaintListener;
 import Ensemble.Ensemble;
 import Ensemble.Maillon;
 
-public class PanneauJeu extends PanneauBase {
+public class PanneauJeu extends PanneauBase implements ComposableElementsGraphiques {
 	private static final long serialVersionUID = 1L;
 	private JFrame fen;
 	private Tank tankEnCours;
@@ -23,22 +22,11 @@ public class PanneauJeu extends PanneauBase {
 		requestFocusInWindow();
 		
 		this.fen = fen;
-		
-		ensembleDesElementsGraphiques = new Ensemble<Affichable>();
-		ensembleDesElementsGraphiques.ajouter(sol);
-		
-		RepaintListener repaintListener = new RepaintListener() {
-
-			@Override
-			public void repaint() {
-				PanneauJeu.this.repaint();
-			}
-			
-		};
+		ajouterElementGraphique(sol);
 		
 		for(Tank tank: tanks) {
-			ensembleDesElementsGraphiques.ajouter(tank);
-			tank.changeRepaintListener(repaintListener);
+			ajouterElementGraphique(tank);
+			tank.changerComposableElementsGraphiques(this);
 		}
 		
 		tankEnCours = tanks[0];
@@ -88,25 +76,16 @@ public class PanneauJeu extends PanneauBase {
 		});
 	}
 	
-	/**
-	 * Ajoute au panneau un élément graphique à afficher.
-	 * @param element L’élément à ajouter pour l’affichage.
-	 * @return Maillon qui est à donner en argument lors de la suppression.
-	 */
-	public Maillon<Affichable> ajouterElementGraphique(Affichable element) {
-		return this.ensembleDesElementsGraphiques.ajouter(element);
-	}
-	
-	public void supprimerElementGraphique(Maillon<Affichable> maillonElement) {
-		this.ensembleDesElementsGraphiques.supprimer(maillonElement);
-	}
-	
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		for(Affichable element: ensembleDesElementsGraphiques) {
+		for(Affichable element: recEnsembleDesElementsGraphiques()) {
 			element.afficher(g);
 		}
 	}
-	
-	private Ensemble<Affichable> ensembleDesElementsGraphiques;
+
+	@Override
+	public void marquerInvalide() {
+		repaint();
+		// TODO Ne pas repeindre systématiquement mais à un certain intervalle minimal.
+	}
 }
