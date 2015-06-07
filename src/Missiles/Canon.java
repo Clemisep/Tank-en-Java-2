@@ -2,23 +2,25 @@ package Missiles;
 
 import java.awt.Graphics;
 
-import Automatitem.RepaintListener;
+import Principal.ComposableElementsGraphiques;
 import Principal.Position;
 import Principal.Sol;
 import Tanks.CanonBougeable;
 
 public interface Canon extends CanonBougeable {
 	/**
-	 * Affiche en (0,0) l’icône correspondant au canon.
+	 * Affiche l’icône correspondant au canon.
+	 * @param position Position où afficher l'icône.
 	 * @param g
 	 */
-	public void afficherIcone(Graphics g);
+	public void afficherIcone(Graphics g, Position position);
 	
 	/**
-	 * Affiche en (0,0) le canon.
+	 * Affiche le canon.
+	 * @param position Position du point d'accroche sur la carte du canon à afficher.
 	 * @param g
 	 */
-	public void afficherCanon(Graphics g);
+	public void afficherCanon(Graphics g, Position position);
 	
 	/**
 	 * Lance un projectile correspondant au canon.
@@ -28,5 +30,5 @@ public interface Canon extends CanonBougeable {
 	 * @param repaintListener
 	 * @return Vrai si un projectile a pu être lancé, faux sinon.
 	 */
-	public boolean tirer(Sol sol, Position position, double vitesse, RepaintListener repaintListener);
+	public boolean tirer(Sol sol, Position position, double vitesse, ComposableElementsGraphiques composable);
 }

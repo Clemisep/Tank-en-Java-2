@@ -8,8 +8,6 @@ import java.awt.event.KeyListener;
 import javax.swing.JFrame;
 
 import Tanks.Tank;
-import Ensemble.Ensemble;
-import Ensemble.Maillon;
 
 public class PanneauJeu extends PanneauBase implements ComposableElementsGraphiques {
 	private static final long serialVersionUID = 1L;

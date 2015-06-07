@@ -3,17 +3,21 @@ package Principal;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
+
+import javax.imageio.ImageIO;
 
 import Automatitem.ClickListener;
 import Automatitem.ItemGroup;
 import Automatitem.ItemText;
 import Automatitem.RepaintListener;
-import Ensemble.Ensemble;
-import Ensemble.Maillon;
-import Tanks.Tank1;
+import Missiles.Armes;
+import Missiles.Canon;
+import Missiles.CanonBasic;
 import Tanks.Tank;
+import Tanks.TankBasic;
 
 public class PanneauMenu extends PanneauBase implements RepaintListener {
 	
@@ -39,7 +43,23 @@ public class PanneauMenu extends PanneauBase implements RepaintListener {
 		equipe2 = new Equipe(1);
 		
 		try {
-			Tank[] tanks = {new Tank1(sol, equipe1, 40, 100, this), new Tank1(sol, equipe2, 800, 100, this)};
+			Canon canons1[] = {new CanonBasic(ImageIO.read(new File(CanonBasic.tableauLienCanon[0])),
+								ImageIO.read(new File(CanonBasic.tableauLienCanon[0])),
+								CanonBasic.tableauAccrocheCanon[0], -1)};
+			Armes armes1 = new Armes(this, canons1);
+			
+			Tank tank1 = new TankBasic(sol, equipe1, 40, 100, ImageIO.read(new File(TankBasic.tableauLienTank[0])), TankBasic.tableauAbscisseMilieuAppui[0],
+					TankBasic.tableauAccrocheTank[0], this, armes1);
+			
+			Canon canons2[] = {new CanonBasic(ImageIO.read(new File(CanonBasic.tableauLienCanon[0])),
+					ImageIO.read(new File(CanonBasic.tableauLienCanon[0])),
+					CanonBasic.tableauAccrocheCanon[0], -1)};
+			Armes armes2 = new Armes(this, canons1);
+			
+			Tank tank2 = new TankBasic(sol, equipe1, taille.width-40, 100, ImageIO.read(new File(TankBasic.tableauLienTank[0])), TankBasic.tableauAbscisseMilieuAppui[0],
+					TankBasic.tableauAccrocheTank[0], this, armes1);
+			
+			Tank[] tanks = {tank1, tank2};
 			
 			this.tanks = tanks;
 			

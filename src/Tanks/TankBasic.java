@@ -2,31 +2,36 @@ package Tanks;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 
 import Ensemble.Ensemble;
+import Missiles.Armes;
 import Principal.ComposableElementsGraphiques;
 import Principal.Equipe;
 import Principal.GereComposable;
 import Principal.Position;
 import Principal.Sol;
 
-public abstract class TankBasic extends GereComposable implements Tank {
+public class TankBasic extends GereComposable implements Tank {
+	
+	public static final String[] tableauLienTank = {"src/Images/tank1.png"};
+	public static final int[] tableauAbscisseMilieuAppui = {38};
+	public static final Position[] tableauAccrocheTank = {new Position(61, 45)};
+	
 	
 	private Position position;
 	private int vie;
 	private Equipe equipe;
-	private BufferedImage imageTank, imageCanon;
+	private BufferedImage imageTank;
 	
 	private final int abscisseMilieuAppui;
 	private Sol sol;
-	private double angleCanon = 0;
 	
-	private Position accrocheTank, accrocheCanon;
+	private Position accrocheTank;
 	
 	private Ensemble<Position> ensembleContour;
+	
+	private Armes armes;
 	
 	/**
 	 * 
@@ -34,14 +39,13 @@ public abstract class TankBasic extends GereComposable implements Tank {
 	 * @param position Position du tank sur la carte.
 	 * @param vie Barre de vie initiale.
 	 * @param imageTank Image du tank à afficher sur la carte.
-	 * @param imageCanon Image du canon qui subira des rotations pour viser.
 	 * @param abscisseMilieuAppui Abscisse du milieu du tank dans sa propre image.
 	 * @param accrocheTank Point d’accroche entre le tank et le canon dans l’image du tank.
-	 * @param accrocheCanon Point d’accroche entre le tank et le canon dans l’image du canon.
-	 * @param repaintListener Écouteur à appeler en cas de modification nécessitant de redessiner.
+	 * @param composable Utilisé pour ajouter ou supprimer des éléments graphiques à afficher.
+	 * @param armes Armes présentes sur le tank (canons et munitions).
 	 */
-	public TankBasic(Sol sol, Equipe equipe, int abscisse, int vie, BufferedImage imageTank, BufferedImage imageCanon, int abscisseMilieuAppui,
-			Position accrocheTank, Position accrocheCanon, ComposableElementsGraphiques composable) {
+	public TankBasic(Sol sol, Equipe equipe, int abscisse, int vie, BufferedImage imageTank, int abscisseMilieuAppui,
+			Position accrocheTank, ComposableElementsGraphiques composable, Armes armes) {
 		
 		// ---------- INITIALISATIONS ------------------
 		
@@ -52,12 +56,11 @@ public abstract class TankBasic extends GereComposable implements Tank {
 		 */
 		this.vie = vie;
 		this.imageTank = imageTank;
-		this.imageCanon = imageCanon;
 		this.abscisseMilieuAppui = abscisseMilieuAppui;
 		this.sol = sol;
 		
 		this.accrocheTank = accrocheTank;
-		this.accrocheCanon = accrocheCanon;
+		this.armes = armes;
 		
 		
 		// ----------- CALCUL DU CONTOUR -----------------
@@ -179,44 +182,31 @@ public abstract class TankBasic extends GereComposable implements Tank {
 				return (int)(8*Math.exp(y0-y));
 			}
 		}
-		
-		// TODO Auto-generated method stub
 		return 200;
 	}
 
 	@Override
 	public void tirer(double force) {
-		// TODO Auto-generated method stub
-		
+		armes.recCanonActuel().tirer(sol, accrocheTank, force, recComposable());
 	}
 	
 	@Override
 	public long bougerCanon(int sens) {
-		double nouvelAngle = angleCanon + (double) sens / 20;
-		
-		if(nouvelAngle <= -1.4)
-			angleCanon = -1.4;
-		else if(nouvelAngle >= 1.4)
-			angleCanon = 1.4;
-		else
-			angleCanon = nouvelAngle;
-		
-		marquerInvalide();
-		return 50;
+		return armes.recCanonActuel().bougerCanon(sens);
 	}
 
 	@Override
 	public void afficher(Graphics g) {
-		g.drawImage(imageTank, position.recX(), position.recY(), null);
 		
-		AffineTransform tx = AffineTransform.getRotateInstance(angleCanon, accrocheCanon.recX(), accrocheCanon.recY());
-		AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
-		g.drawImage(op.filter(imageCanon, null), position.recX()+accrocheTank.recX()-accrocheCanon.recX(), position.recY()+accrocheTank.recY()-accrocheCanon.recY(), null);
+		g.drawImage(imageTank, position.recX(), position.recY(), null); // Affichage du tank
+		armes.recCanonActuel().afficherCanon(g, new Position(position.recX()+accrocheTank.recX(), position.recY()+accrocheTank.recY())); // Affichage du canon
 	}
 
 	@Override
 	public void frapper(double force) {
 		vie -= force;
+		// TODO Barre de vie
+		marquerInvalide();
 	}
 	
 	public boolean estVivant() {

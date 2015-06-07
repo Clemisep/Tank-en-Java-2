@@ -2,7 +2,6 @@ package Tanks;
 
 import java.awt.Graphics;
 
-import Automatitem.RepaintListener;
 import Principal.Affichable;
 import Principal.Equipe;
 

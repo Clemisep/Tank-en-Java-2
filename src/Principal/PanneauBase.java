@@ -1,8 +1,6 @@
 package Principal;
 
 import java.awt.Dimension;
-import java.awt.Graphics;
-
 import javax.swing.JPanel;
 
 import Ensemble.Ensemble;
@@ -10,22 +8,12 @@ import Ensemble.Maillon;
 
 public class PanneauBase extends JPanel implements ComposableElementsGraphiques {
 	
-	private GereComposable gereComposable;
 	private Ensemble<Affichable> ensembleDesElementsGraphiques;
 	
 	public PanneauBase(Dimension taille) {
 		setSize((int)taille.getWidth(), (int)taille.getHeight());
 		
 		ensembleDesElementsGraphiques = new Ensemble<Affichable>();
-		
-		gereComposable = new GereComposable(this) {
-
-			@Override
-			public void afficher(Graphics g) {
-				// TODO
-			}
-			
-		};
 	}
 	
 	

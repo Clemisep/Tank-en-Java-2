@@ -3,25 +3,21 @@ package Missiles;
 import java.awt.Dimension;
 import java.awt.Graphics;
 
-import Automatitem.RepaintListener;
-import Principal.Position;
-import Tanks.CanonBougeable;
+import Principal.ComposableElementsGraphiques;
+import Principal.GereComposable;
 
 /**
  * Gestion des canons, munitions et leur affichage.
  *
  */
-public class Armes implements CanonBougeable {
+public class Armes extends GereComposable {
 	private Canon[] canons;
 	private Canon canonActuel;
-	private RepaintListener repaintListener;
 	
-	public Armes(RepaintListener repaintListener, Canon[] canons) {
-		this.repaintListener = repaintListener;
-	}
-	
-	public void repaint() {
-		repaintListener.repaint();
+	public Armes(ComposableElementsGraphiques composable, Canon[] canons) {
+		super(composable);
+		this.canons = canons;
+		canonActuel = canons[0];
 	}
 	
 	/**
@@ -33,21 +29,12 @@ public class Armes implements CanonBougeable {
 		// TODO Afficher le menu de sélection pour changer de canon.
 	}
 	
-	/**
-	 * Affiche le canon du tank.
-	 * @param g Contexte graphique.
-	 * @param position Position du point d'accroche sur la carte.
-	 */
-	public void afficherCanon(Graphics g, Position position) {
-		g.translate(position.recX(), position.recY());
-		canonActuel.afficherCanon(g);
-		g.translate(-position.recX(), -position.recY());
+	public Canon recCanonActuel() {
+		return canonActuel;
 	}
 
 	@Override
-	public long bougerCanon(int sens) {
-		long temps = canonActuel.bougerCanon(sens);
-		repaint();
-		return temps;
+	public void afficher(Graphics g) {
+		// TODO Auto-generated method stub
 	}
 }

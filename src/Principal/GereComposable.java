@@ -33,12 +33,16 @@ public abstract class GereComposable implements Affichable {
 	}
 	
 	/**
-	 * Retire l’élément du composable actiel pour l’ajouter au nouveau.
+	 * Retire l’élément du composable actuel pour l’ajouter au nouveau.
 	 */
 	public void changerComposableElementsGraphiques(ComposableElementsGraphiques composable) {
 		if(maillon != null)
 			this.composable.supprimerElementGraphique(maillon);
 		this.composable = composable;
 		composable.ajouterElementGraphique(this);
+	}
+	
+	public ComposableElementsGraphiques recComposable() {
+		return composable;
 	}
 }
