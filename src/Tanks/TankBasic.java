@@ -179,16 +179,14 @@ public abstract class TankBasic implements Tank {
 	public int deplacer(int sens) {
 		
 		int x = position.recX() + sens;
+		int y0 = position.recY();
 		
-		for(int y=0 ; y>-5 ; y--) {
+		for(int y=y0 ; y>y0-4 ; y--) {
 			if(positionValide(new Position(x, y))) {
 				while(positionValide(new Position(x, y+1))) y++;
 				
-				int y0 = position.recY();
-				
 				placer(new Position(x, y));
-				
-				return 0; //10*Math.abs(y-y0);
+				return (int)(8*Math.exp(y0-y));
 			}
 		}
 		
