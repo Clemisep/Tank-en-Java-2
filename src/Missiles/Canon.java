@@ -6,6 +6,7 @@ import Principal.ComposableElementsGraphiques;
 import Principal.Position;
 import Principal.Sol;
 import Tanks.CanonBougeable;
+import Tanks.EcouteurTir;
 
 public interface Canon extends CanonBougeable {
 	/**
@@ -26,9 +27,9 @@ public interface Canon extends CanonBougeable {
 	 * Lance un projectile correspondant au canon.
 	 * @param sol
 	 * @param position Position d’accroche du canon sur la carte.
-	 * @param vitesse
+	 * @param vitesse Vitesse en pixels par seconde.
 	 * @param repaintListener
 	 * @return Vrai si un projectile a pu être lancé, faux sinon.
 	 */
-	public boolean tirer(Sol sol, Position position, double vitesse, ComposableElementsGraphiques composable);
+	public boolean tirer(Sol sol, Position position, double vitesse, ComposableElementsGraphiques composable, EcouteurTir ecouteurTir);
 }

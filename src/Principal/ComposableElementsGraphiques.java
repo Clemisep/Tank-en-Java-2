@@ -1,5 +1,6 @@
 package Principal;
 
+import Ensemble.Ensemble;
 import Ensemble.Maillon;
 
 public interface ComposableElementsGraphiques {
@@ -15,6 +16,8 @@ public interface ComposableElementsGraphiques {
 	 * @param maillonElement Maillon fourni en retour de l’ajout.
 	 */
 	public void supprimerElementGraphique(Maillon<Affichable> maillonElement);
+	
+	public Ensemble<Affichable> recEnsembleDesElementsGraphiques();
 	
 	/**
 	 * Indique que l’élément graphique est à redessiner.

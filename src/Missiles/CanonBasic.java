@@ -4,10 +4,15 @@ import java.awt.Graphics;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 
 import Principal.ComposableElementsGraphiques;
 import Principal.Position;
 import Principal.Sol;
+import Tanks.EcouteurTir;
 
 public class CanonBasic implements Canon {
 	
@@ -58,10 +63,15 @@ public class CanonBasic implements Canon {
 		AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
 		g.drawImage(op.filter(imageCanon, null), position.recX()-accrocheCanon.recX(), position.recY()-accrocheCanon.recY(), null);
 	}
-
+	
 	@Override
-	public boolean tirer(Sol sol, Position position, double vitesse, ComposableElementsGraphiques composable) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean tirer(Sol sol, Position position, double vitesse, ComposableElementsGraphiques composable, EcouteurTir ecouteurTir) {
+		munitions = Math.max(-1, munitions-1);
+		if(munitions == 0) return false; // S'il n'y a plus de munitions, on ne peut pas tirer.
+		
+		Missile missile = new Missile(composable, sol, position, angleCanon, vitesse, ecouteurTir);
+		
+		// TODO S'occuper du tir
+		return true;
 	}
 }

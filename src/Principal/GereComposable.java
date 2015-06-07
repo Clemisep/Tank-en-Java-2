@@ -1,5 +1,6 @@
 package Principal;
 
+import Ensemble.Ensemble;
 import Ensemble.Maillon;
 
 /**
@@ -13,7 +14,7 @@ public abstract class GereComposable implements Affichable {
 	
 	public GereComposable(ComposableElementsGraphiques composable) {
 		this.composable = composable;
-		composable.ajouterElementGraphique(this);
+		maillon = composable.ajouterElementGraphique(this);
 	}
 	
 	/**
@@ -27,9 +28,14 @@ public abstract class GereComposable implements Affichable {
 	 * Retire l’élément du composable.
 	 */
 	public void supprimerComposable() {
-		this.composable.supprimerElementGraphique(maillon);
+		composable.supprimerElementGraphique(maillon);
 		maillon = null;
 		marquerInvalide();
+	}
+	
+	//TODO enlever (debug)
+	public Ensemble<Affichable> recEnsemble() {
+		return composable.recEnsembleDesElementsGraphiques();
 	}
 	
 	/**
@@ -39,7 +45,7 @@ public abstract class GereComposable implements Affichable {
 		if(maillon != null)
 			this.composable.supprimerElementGraphique(maillon);
 		this.composable = composable;
-		composable.ajouterElementGraphique(this);
+		maillon = composable.ajouterElementGraphique(this);
 	}
 	
 	public ComposableElementsGraphiques recComposable() {

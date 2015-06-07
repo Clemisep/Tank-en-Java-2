@@ -7,12 +7,18 @@ import java.awt.event.KeyListener;
 
 import javax.swing.JFrame;
 
+import Ensemble.Ensemble;
+import Tanks.EcouteurTir;
 import Tanks.Tank;
 
 public class PanneauJeu extends PanneauBase implements ComposableElementsGraphiques {
 	private static final long serialVersionUID = 1L;
 	private JFrame fen;
 	private Tank tankEnCours;
+	
+	private final int hauteurRuban = 50; // hauteur du panneau inférieur pour les divers affichages
+	private final int largeurTir = 150; // largeur du panneau de sélection de la force de tir (panneau tout à droite)
+	private final int largeurVent = 150; // largeur du panneau affichant la force du vent (2e à partir de la droite)
 	
 	public PanneauJeu(JFrame fen, Dimension taille, Tank[] tanks, Sol sol) {
 		super(taille);
@@ -33,6 +39,7 @@ public class PanneauJeu extends PanneauBase implements ComposableElementsGraphiq
 			
 			private ThreadDeplacement threadDeplacement;
 			private ThreadBougerCanon threadBougerCanon;
+			private ThreadPuissanceTir threadPuissanceTir;
 			
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -48,8 +55,19 @@ public class PanneauJeu extends PanneauBase implements ComposableElementsGraphiq
 				} else if(keyCode == KeyEvent.VK_UP || keyCode == KeyEvent.VK_DOWN) {
 					if(threadBougerCanon == null) {
 						int sens = (keyCode == KeyEvent.VK_UP) ? -1 : 1;
-						threadBougerCanon = new ThreadBougerCanon(tankEnCours, sens);
+						threadBougerCanon = new ThreadBougerCanon(tankEnCours, sens, PanneauJeu.this);
 						threadBougerCanon.start();
+					}
+				} else if(keyCode == KeyEvent.VK_SPACE) {
+					if(threadPuissanceTir == null) {
+						threadPuissanceTir = new ThreadPuissanceTir(
+								PanneauJeu.this,
+								new Position(getWidth()-largeurTir, getHeight()-hauteurRuban),
+								largeurTir,
+								hauteurRuban
+						);
+						
+						threadPuissanceTir.start();
 					}
 				}
 			}
@@ -65,6 +83,20 @@ public class PanneauJeu extends PanneauBase implements ComposableElementsGraphiq
 				} else if(threadBougerCanon != null && (keyCode == KeyEvent.VK_UP || keyCode == KeyEvent.VK_DOWN)) {
 					threadBougerCanon.interrupt();
 					threadBougerCanon = null;
+				} else if(threadPuissanceTir != null && keyCode == KeyEvent.VK_SPACE) {
+					
+					threadPuissanceTir.interrupt();
+					double puissance = threadPuissanceTir.recPuissance();
+					
+					tankEnCours.tirer(puissance, new EcouteurTir() {
+						// Quand on a fini de tirer, on efface la barre de tir.
+						@Override
+						public void tirTermine() {
+							threadPuissanceTir.supprimerComposable();
+							threadPuissanceTir = null;
+						}
+						
+					});
 				}
 			}
 

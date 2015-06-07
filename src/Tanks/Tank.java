@@ -14,7 +14,7 @@ public interface Tank extends Affichable, CanonBougeable {
 	 */
 	public int deplacer(int sens);
 	
-	public void tirer(double force);
+	public void tirer(double force, EcouteurTir ecouteurTir);
 	
 	/**
 	 * Bouge le canon pour viser.

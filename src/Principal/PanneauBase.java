@@ -1,6 +1,7 @@
 package Principal;
 
 import java.awt.Dimension;
+
 import javax.swing.JPanel;
 
 import Ensemble.Ensemble;
@@ -25,11 +26,11 @@ public class PanneauBase extends JPanel implements ComposableElementsGraphiques 
 	 * @return Maillon qui est à donner en argument lors de la suppression.
 	 */
 	public Maillon<Affichable> ajouterElementGraphique(Affichable element) {
-		return this.ensembleDesElementsGraphiques.ajouter(element);
+		return ensembleDesElementsGraphiques.ajouter(element);
 	}
 	
 	public void supprimerElementGraphique(Maillon<Affichable> maillonElement) {
-		this.ensembleDesElementsGraphiques.supprimer(maillonElement);
+		ensembleDesElementsGraphiques.supprimer(maillonElement);
 	}
 	
 	public Ensemble<Affichable> recEnsembleDesElementsGraphiques() {

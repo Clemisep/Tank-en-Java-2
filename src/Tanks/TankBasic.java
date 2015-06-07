@@ -186,8 +186,8 @@ public class TankBasic extends GereComposable implements Tank {
 	}
 
 	@Override
-	public void tirer(double force) {
-		armes.recCanonActuel().tirer(sol, accrocheTank, force, recComposable());
+	public void tirer(double force, EcouteurTir ecouteurTir) {
+		armes.recCanonActuel().tirer(sol, new Position(accrocheTank.recX()+position.recX(), accrocheTank.recY()+position.recY()), force, recComposable(), ecouteurTir);
 	}
 	
 	@Override

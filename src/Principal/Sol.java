@@ -86,9 +86,6 @@ public class Sol implements Affichable {
 			float dy = 2f*(float)h/((float)r+1f); // À ajouter à y à chaque étape ; correspond à la pente.
 			float ddy = -dy / (float)r; // À ajouter à dy à chaque étape ; correspond à la courbure de la montagne.
 			
-			// TODO Supprimer ce debug.
-			System.out.println("x "+x+", y "+y+ ", R "+r+", h "+h+", dy "+dy+", ddy "+ddy);
-			
 			while(x-x0 < 2*r && x<xTaille) {
 				
 				// TODO Différentes hauteurs de cols
@@ -142,7 +139,8 @@ public class Sol implements Affichable {
 	 * @param y Ordonnée du morceau.
 	 */
 	private void liberer(int x, int y) {
-		image.setRGB(x, y, couleurPlan.getRGB());
+		if(x>=0 && x<recXTaille() && y>=0 && y<recYTaille())
+			image.setRGB(x, y, couleurPlan.getRGB());
 	}
 	
 	public void afficher(Graphics g) {

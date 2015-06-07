@@ -29,13 +29,20 @@ public class Ensemble<T> implements Iterable<T> {
 	
 	/**
 	 * Supprime un élément de l’ensemble. Ne supprimer un élément d’un ensemble que lorsqu’il a été ajouté au même ensemble et ne le supprimer qu’une fois.
-	 * @param maillonElement Référence renvoyée par la méthode ajouter lors de l’ajout de l’élément.
+	 * @param maillonElement Référence renvoyée par la méthode lors de l’ajout de l’élément.
 	 */
 	public void supprimer(Maillon<T> maillonElement) {
 		if(longueur == 1)
 			tete = queue = null;
-		else
+		else {
+			
+			if(maillonElement == queue)
+				queue = queue.recSuivant();
+			else if(maillonElement == tete)
+				tete = tete.recPrecedent();
+			
 			maillonElement.supprimer();
+		}
 		
 		longueur--;
 		
