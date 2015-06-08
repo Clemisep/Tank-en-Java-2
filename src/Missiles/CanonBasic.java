@@ -12,9 +12,9 @@ import Tanks.EcouteurTir;
 
 public class CanonBasic implements Canon {
 	
-	public static final String[] tableauLienCanon = {"src/Images/canon1.png"};
-	public static final Position[] tableauAccrocheCanon = {new Position(45, 38)};
-	public static final Position[] tableauBoutCanon = {new Position(85, 38)};
+	public static final String[] tableauLienCanon = {"src/Images/canon1.png", "src/Images/canon2.png", "src/Images/canon3.png"};
+	public static final Position[] tableauAccrocheCanon = {new Position(45, 38), new Position(229, 142), new Position(217, 192)};
+	public static final Position[] tableauBoutCanon = {new Position(85, 38), new Position(336, 142), new Position(398, 192)};
 	
 	private static final double angleOuverture = 1.4;
 	
@@ -25,6 +25,7 @@ public class CanonBasic implements Canon {
 	private double angleCanon;
 	private final int sens;
 	private final Position boutCanon;
+	private final Type type;
 	
 	/**
 	 * 
@@ -35,19 +36,43 @@ public class CanonBasic implements Canon {
 	 * @param munitions Nombre de munitions au départ (-1 pour illimité).
 	 * @param sens Le sens du canon : 1 = vers la droite, -1 = vers la gauche.
 	 */
-	public CanonBasic(BufferedImage image, BufferedImage imageIcone, Position accrocheCanon, Position boutCanon, int munitions, int sens) {
+	public CanonBasic(BufferedImage image, BufferedImage imageIcone, Position accrocheCanon, Position boutCanon, int munitions, int sens, Type type) {
 		this.imageCanon = image;
 		this.imageIcone = imageIcone;
 		this.accrocheCanon = accrocheCanon;
 		this.boutCanon = boutCanon;
 		this.munitions = munitions;
 		this.sens = sens;
+		this.type = type;
 		
 		if(sens == 1)
 			angleCanon = 0;
 		else
 			angleCanon = Math.PI;
 	}
+	
+	public enum Type {
+		NORMAL(50, 20), // missile normal
+		BARRAGE(20, 20), // missile se divisant en trois à l'apogée
+		TIERS(20, 20), // tiers de missile barrage
+		VERTICAL(50, 35), // missile tombant verticalement à l'apogée
+		VERTICAL_ACTIF(20, 35); // missile étant en train de tomber verticalement
+		
+		private int rayon, force;
+		
+		private Type(int rayon, int force) {
+			this.rayon = rayon;
+			this.force = force;
+		}
+		
+		public int recRayon() {
+			return rayon;
+		}
+		
+		public int recForce() {
+			return force;
+		}
+	};
 
 	@Override
 	public long bougerCanon(int sens) {
@@ -97,8 +122,9 @@ public class CanonBasic implements Canon {
 	
 	@Override
 	public boolean tirer(Sol sol, Position position, double vitesse, ComposableElementsGraphiques composable, EcouteurTir ecouteurTir) {
-		munitions = Math.max(-1, munitions-1);
 		if(munitions == 0) return false; // S'il n'y a plus de munitions, on ne peut pas tirer.
+		
+		munitions = Math.max(-1, munitions-1);
 		
 		int dx = boutCanon.recX()-accrocheCanon.recX();
 		int dy = boutCanon.recY()-accrocheCanon.recY();
@@ -125,7 +151,7 @@ public class CanonBasic implements Canon {
 				composable,
 				sol,
 				new Position(boutCanonX, boutCanonY),
-				angleCanon, vitesse, ecouteurTir
+				angleCanon, vitesse, ecouteurTir, type
 				);
 		
 		// TODO S'occuper du tir

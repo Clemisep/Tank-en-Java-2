@@ -15,6 +15,7 @@ public abstract class GereComposable implements Affichable {
 	public GereComposable(ComposableElementsGraphiques composable) {
 		this.composable = composable;
 		maillon = composable.ajouterElementGraphique(this);
+		System.out.println("Ajout "+maillon.recValeur());
 	}
 	
 	/**
@@ -28,6 +29,7 @@ public abstract class GereComposable implements Affichable {
 	 * Retire l’élément du composable.
 	 */
 	public void supprimerComposable() {
+		System.out.println("Suppression "+maillon.recValeur());
 		composable.supprimerElementGraphique(maillon);
 		maillon = null;
 		marquerInvalide();

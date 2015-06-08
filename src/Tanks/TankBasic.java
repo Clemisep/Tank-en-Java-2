@@ -3,6 +3,10 @@ package Tanks;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 
 import Ensemble.Ensemble;
 import Missiles.Armes;
@@ -17,6 +21,7 @@ public class TankBasic extends GereComposable implements Tank {
 	public static final String[] tableauLienTank = {"src/Images/tank1.png", "src/Images/tank2.png"};
 	public static final int[] tableauAbscisseMilieuAppui = {38, 45};
 	public static final Position[] tableauAccrocheTank = {new Position(61, 45), new Position(17, 45)};
+	private static final int vieParDefaut = 100;
 	
 	private Position position;
 	private int vie;
@@ -113,6 +118,10 @@ public class TankBasic extends GereComposable implements Tank {
 		placer(abscisse);
 	}
 	
+	public TankBasic(Sol sol, Equipe equipe, int abscisse, int numeroTank, ComposableElementsGraphiques composable, Armes armes) throws IOException {
+		this(sol, equipe, abscisse, vieParDefaut, ImageIO.read(new File(tableauLienTank[numeroTank])), tableauAbscisseMilieuAppui[numeroTank], tableauAccrocheTank[numeroTank], composable, armes);
+	}
+	
 	/**
 	 * Permet de savoir si le point de coordonnées (x,y) appartient à la matière du tank.
 	 * @param x
@@ -164,6 +173,16 @@ public class TankBasic extends GereComposable implements Tank {
 		marquerInvalide();
 	}
 	
+	public void positionDescendre(Position position) {
+		int x = position.recX(), y = position.recY();
+		while(positionValide(new Position(x, y+1))) y++;
+		placer(new Position(x, y));
+	}
+	
+	public void descendre() {
+		positionDescendre(position);
+	}
+	
 	@Override
 	public int deplacer(int sens) {
 		
@@ -172,9 +191,7 @@ public class TankBasic extends GereComposable implements Tank {
 		
 		for(int y=y0 ; y>y0-4 ; y--) {
 			if(positionValide(new Position(x, y))) {
-				while(positionValide(new Position(x, y+1))) y++;
-				
-				placer(new Position(x, y));
+				positionDescendre(new Position(x, y));
 				return (int)(8*Math.exp(y0-y));
 			}
 		}
@@ -202,12 +219,18 @@ public class TankBasic extends GereComposable implements Tank {
 	}
 
 	@Override
-	public void frapper(Position c, int rayon) {
+	public void frapper(Position c, int rayon, int force) {
 		for(Position p : ensembleContour) {
 			int dx = position.recX() + p.recX() - c.recX();
 			int dy = position.recY() + p.recY() - c.recY();
 			if(dx*dx+dy*dy <= rayon*rayon) {
-				vie = Math.max(0, vie-30);
+				vie = Math.max(0, vie-force);
+				if(vie == 0) {
+					TankBasic.this.supprimerComposable();
+					equipe.perdreTank();
+				} else {
+					descendre();
+				}
 				marquerInvalide();
 				return;
 			}
@@ -221,6 +244,13 @@ public class TankBasic extends GereComposable implements Tank {
 	@Override
 	public Equipe recEquipe() {
 		return equipe;
+	}
+
+	@Override
+	public void canonSuivant() {
+		System.out.println("changement");
+		armes.canonSuivant();
+		marquerInvalide();
 	}
 
 }

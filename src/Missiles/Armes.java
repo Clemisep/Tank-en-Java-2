@@ -12,12 +12,12 @@ import Principal.GereComposable;
  */
 public class Armes extends GereComposable {
 	private Canon[] canons;
-	private Canon canonActuel;
+	private int indiceCanonActuel;
 	
 	public Armes(ComposableElementsGraphiques composable, Canon[] canons) {
 		super(composable);
 		this.canons = canons;
-		canonActuel = canons[0];
+		indiceCanonActuel = 0;
 	}
 	
 	/**
@@ -30,7 +30,12 @@ public class Armes extends GereComposable {
 	}
 	
 	public Canon recCanonActuel() {
-		return canonActuel;
+		return canons[indiceCanonActuel];
+	}
+	
+	public void canonSuivant() {
+		if(++indiceCanonActuel >= canons.length)
+			indiceCanonActuel = 0;
 	}
 
 	@Override

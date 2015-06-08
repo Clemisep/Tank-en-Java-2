@@ -30,8 +30,11 @@ public interface Tank extends Affichable, CanonBougeable {
 	 * Informe le tank qu'un projectile a éclaté pour qu'il regarde s'il est touché.
 	 * @param position Centre de l'explosion.
 	 * @param rayon Rayon d'action.
+	 * @param force Force de frappe du missile.
 	 */
-	public void frapper(Position position, int rayon);
+	public void frapper(Position position, int rayon, int force);
 	
 	public Equipe recEquipe();
+
+	public void canonSuivant();
 }

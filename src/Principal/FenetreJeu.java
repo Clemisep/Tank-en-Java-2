@@ -38,6 +38,7 @@ public class FenetreJeu extends JFrame {
 		contenu.add(panneau);
 		contenu.validate();
 		panneau.requestFocusInWindow();
+		repaint();
 		
 		/*gestionnaire.addLayoutComponent(panneau, "jeu");
 		gestionnaire.show(getContentPane(), "jeu");*/

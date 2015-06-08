@@ -3,9 +3,11 @@ package Principal;
 public class Equipe {
 	
 	private int nombreDeTanks;
+	private String nomEquipe;
 	
-	public Equipe(int nombreDeTanks) {
+	public Equipe(int nombreDeTanks, String nomEquipe) {
 		this.nombreDeTanks = nombreDeTanks;
+		this.nomEquipe = nomEquipe;
 	}
 	
 	/**
@@ -20,5 +22,9 @@ public class Equipe {
 	 */
 	public int recNombreDeTanks() {
 		return nombreDeTanks;
+	}
+
+	public String recNomEquipe() {
+		return nomEquipe;
 	}
 }

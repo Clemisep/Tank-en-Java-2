@@ -157,19 +157,20 @@ public class Sol extends GereComposable implements Affichable {
 	/**
 	 * Gère automatiquement la destruction du terrain provenant de l’explosion d’un projectile.
 	 * @param position Position du projectile.
-	 * @param force Puissance du projectile.
+	 * @param rayon Rayon d'action du projectile.
+	 * @param force Force de frappe du projectile.
 	 */
-	public void exploser(Position position, int force) {
+	public void exploser(Position position, int rayon, int force) {
 		int x0 = position.recX(), y0 = position.recY();
 		
-		for(int x = x0-force ; x<=x0+force ; x++) {
-			int hauteur = (int) (force * Math.sin(Math.acos(((double)(x-x0))/(double)force)));
+		for(int x = x0-rayon ; x<=x0+rayon ; x++) {
+			int hauteur = (int) (rayon * Math.sin(Math.acos(((double)(x-x0))/(double)rayon)));
 			for(int y = y0-hauteur ; y <= y0+hauteur ; y++)
 				liberer(x, y);
 		}
 		
 		for(Tank tank : tanks)
-			tank.frapper(position, force);
+			tank.frapper(position, rayon, force);
 		
 		repaint();
 	}
