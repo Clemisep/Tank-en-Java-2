@@ -14,18 +14,17 @@ import Principal.Sol;
 
 public class TankBasic extends GereComposable implements Tank {
 	
-	public static final String[] tableauLienTank = {"src/Images/tank1.png"};
-	public static final int[] tableauAbscisseMilieuAppui = {38};
-	public static final Position[] tableauAccrocheTank = {new Position(61, 45)};
-	
+	public static final String[] tableauLienTank = {"src/Images/tank1.png", "src/Images/tank2.png"};
+	public static final int[] tableauAbscisseMilieuAppui = {38, 45};
+	public static final Position[] tableauAccrocheTank = {new Position(61, 45), new Position(17, 45)};
 	
 	private Position position;
 	private int vie;
 	private Equipe equipe;
-	private BufferedImage imageTank;
+	private final BufferedImage imageTank;
 	
 	private final int abscisseMilieuAppui;
-	private Sol sol;
+	private final Sol sol;
 	
 	private Position accrocheTank;
 	
@@ -51,9 +50,6 @@ public class TankBasic extends GereComposable implements Tank {
 		
 		super(composable);
 		this.equipe = equipe;
-		/**
-		 * Position du tank correspondant au coin supérieur gauche de l'image sur la carte.
-		 */
 		this.vie = vie;
 		this.imageTank = imageTank;
 		this.abscisseMilieuAppui = abscisseMilieuAppui;
@@ -200,13 +196,22 @@ public class TankBasic extends GereComposable implements Tank {
 		
 		g.drawImage(imageTank, position.recX(), position.recY(), null); // Affichage du tank
 		armes.recCanonActuel().afficherCanon(g, new Position(position.recX()+accrocheTank.recX(), position.recY()+accrocheTank.recY())); // Affichage du canon
+		
+		g.setColor(Color.ORANGE);
+		g.fillRect(position.recX()+abscisseMilieuAppui-vie/2, position.recY()-10, vie, 5);
 	}
 
 	@Override
-	public void frapper(double force) {
-		vie -= force;
-		// TODO Barre de vie
-		marquerInvalide();
+	public void frapper(Position c, int rayon) {
+		for(Position p : ensembleContour) {
+			int dx = position.recX() + p.recX() - c.recX();
+			int dy = position.recY() + p.recY() - c.recY();
+			if(dx*dx+dy*dy <= rayon*rayon) {
+				vie = Math.max(0, vie-30);
+				marquerInvalide();
+				return;
+			}
+		}
 	}
 	
 	public boolean estVivant() {

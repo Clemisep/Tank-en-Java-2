@@ -22,6 +22,17 @@ public class Missile extends GereComposable implements Affichable {
 	private double angle;
 	private double vitesse;
 	
+	private double gravite = 3;
+	
+	/**
+	 * 
+	 * @param composable
+	 * @param sol
+	 * @param position
+	 * @param angle
+	 * @param vitesse
+	 * @param ecouteurTir
+	 */
 	public Missile(ComposableElementsGraphiques composable, Sol sol, Position position, double angle, double vitesse, EcouteurTir ecouteurTir) {
 		super(composable);
 		this.sol = sol;
@@ -45,7 +56,7 @@ public class Missile extends GereComposable implements Affichable {
 					y += yVitesse/pas;
 					Missile.this.position = new Position((int)x, (int)y);
 					
-					yVitesse += 1;
+					yVitesse += gravite;
 					composable.marquerInvalide();
 					
 					try {

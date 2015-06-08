@@ -45,7 +45,7 @@ public class PanneauMenu extends PanneauBase implements RepaintListener {
 		try {
 			Canon canons1[] = {new CanonBasic(ImageIO.read(new File(CanonBasic.tableauLienCanon[0])),
 								ImageIO.read(new File(CanonBasic.tableauLienCanon[0])),
-								CanonBasic.tableauAccrocheCanon[0], -1)};
+								CanonBasic.tableauAccrocheCanon[0], CanonBasic.tableauBoutCanon[0], -1, 1)};
 			Armes armes1 = new Armes(this, canons1);
 			
 			Tank tank1 = new TankBasic(sol, equipe1, 40, 100, ImageIO.read(new File(TankBasic.tableauLienTank[0])), TankBasic.tableauAbscisseMilieuAppui[0],
@@ -53,13 +53,15 @@ public class PanneauMenu extends PanneauBase implements RepaintListener {
 			
 			Canon canons2[] = {new CanonBasic(ImageIO.read(new File(CanonBasic.tableauLienCanon[0])),
 					ImageIO.read(new File(CanonBasic.tableauLienCanon[0])),
-					CanonBasic.tableauAccrocheCanon[0], -1)};
-			Armes armes2 = new Armes(this, canons1);
+					CanonBasic.tableauAccrocheCanon[0], CanonBasic.tableauBoutCanon[0], -1, -1)};
+			Armes armes2 = new Armes(this, canons2);
 			
-			Tank tank2 = new TankBasic(sol, equipe1, taille.width-40, 100, ImageIO.read(new File(TankBasic.tableauLienTank[0])), TankBasic.tableauAbscisseMilieuAppui[0],
-					TankBasic.tableauAccrocheTank[0], this, armes1);
+			Tank tank2 = new TankBasic(sol, equipe1, taille.width-40, 100, ImageIO.read(new File(TankBasic.tableauLienTank[1])), TankBasic.tableauAbscisseMilieuAppui[1],
+					TankBasic.tableauAccrocheTank[1], this, armes2);
 			
 			Tank[] tanks = {tank1, tank2};
+			
+			sol.changeTanks(tanks);
 			
 			this.tanks = tanks;
 			

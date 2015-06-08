@@ -7,14 +7,15 @@ import java.awt.event.KeyListener;
 
 import javax.swing.JFrame;
 
-import Ensemble.Ensemble;
 import Tanks.EcouteurTir;
 import Tanks.Tank;
 
 public class PanneauJeu extends PanneauBase implements ComposableElementsGraphiques {
 	private static final long serialVersionUID = 1L;
 	private JFrame fen;
+	private Tank[] tanks;
 	private Tank tankEnCours;
+	private int indiceTankEnCours = 0;
 	
 	private final int hauteurRuban = 50; // hauteur du panneau inférieur pour les divers affichages
 	private final int largeurTir = 150; // largeur du panneau de sélection de la force de tir (panneau tout à droite)
@@ -27,6 +28,8 @@ public class PanneauJeu extends PanneauBase implements ComposableElementsGraphiq
 		
 		this.fen = fen;
 		ajouterElementGraphique(sol);
+		
+		this.tanks = tanks;
 		
 		for(Tank tank: tanks) {
 			ajouterElementGraphique(tank);
@@ -94,6 +97,7 @@ public class PanneauJeu extends PanneauBase implements ComposableElementsGraphiq
 						public void tirTermine() {
 							threadPuissanceTir.supprimerComposable();
 							threadPuissanceTir = null;
+							joueurSuivant();
 						}
 						
 					});
@@ -104,6 +108,12 @@ public class PanneauJeu extends PanneauBase implements ComposableElementsGraphiq
 			public void keyTyped(KeyEvent e) {}
 			
 		});
+	}
+	
+	private void joueurSuivant() {
+		if(++indiceTankEnCours >= tanks.length)
+			indiceTankEnCours = 0;
+		tankEnCours = tanks[indiceTankEnCours];
 	}
 	
 	public void paintComponent(Graphics g) {

@@ -7,7 +7,8 @@ public class ThreadPuissanceTir extends GereComposable implements Runnable {
 	private int larg;
 	private int haut;
 	private double puissance = 0;
-	private final double maxPuissance = 100f;
+	private final double maxPuissance = 500f;
+	private final double pas = 5;
 	private Thread thread=null;
 	
 	/**
@@ -31,7 +32,7 @@ public class ThreadPuissanceTir extends GereComposable implements Runnable {
 	public void run() {
 		try {
 			while(puissance <= maxPuissance) {
-				puissance += 1;
+				puissance += pas;
 				recComposable().marquerInvalide();
 				Thread.sleep(20);
 			}

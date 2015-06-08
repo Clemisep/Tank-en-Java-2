@@ -4,6 +4,7 @@ import java.awt.Graphics;
 
 import Principal.Affichable;
 import Principal.Equipe;
+import Principal.Position;
 
 public interface Tank extends Affichable, CanonBougeable {
 	
@@ -25,7 +26,12 @@ public interface Tank extends Affichable, CanonBougeable {
 	
 	public void afficher(Graphics g);
 	
-	public void frapper(double force);
+	/**
+	 * Informe le tank qu'un projectile a éclaté pour qu'il regarde s'il est touché.
+	 * @param position Centre de l'explosion.
+	 * @param rayon Rayon d'action.
+	 */
+	public void frapper(Position position, int rayon);
 	
 	public Equipe recEquipe();
 }

@@ -8,9 +8,10 @@ import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.util.Random;
 
+import Tanks.Tank;
 import Ensemble.Maillon;
 
-public class Sol implements Affichable {
+public class Sol extends GereComposable implements Affichable {
 	
 	private final int xTaille, yTaille;
 	private BufferedImage image;
@@ -24,16 +25,13 @@ public class Sol implements Affichable {
 	private final int maxAltitudeColBord;
 	private final int minAltitudeColMilieu;
 	private final int maxAltitudeColMilieu;*/
-	private ComposableElementsGraphiques composable;
-	private Maillon<Affichable> maillon;
+	private Tank[] tanks = {};
 	
 	//private final int minAltitudePointeBord;
 	
 	public Sol(Dimension dimension, ComposableElementsGraphiques composable) {
 		
-		this.composable = composable;
-		
-		maillon = composable.ajouterElementGraphique(this);
+		super(composable);
 		
 		xTaille = dimension.width;
 		yTaille = dimension.height;
@@ -99,6 +97,10 @@ public class Sol implements Affichable {
 		}
 	}
 	
+	public void changeTanks(Tank[] tanks) {
+		this.tanks = tanks;
+	}
+	
 	private boolean estAuCentre(int x) {
 		return x >= xTaille/3 && x <= xTaille*2/3;
 	}
@@ -149,7 +151,7 @@ public class Sol implements Affichable {
 	}
 	
 	private void repaint() {
-		composable.marquerInvalide();
+		recComposable().marquerInvalide();
 	}
 	
 	/**
@@ -165,6 +167,9 @@ public class Sol implements Affichable {
 			for(int y = y0-hauteur ; y <= y0+hauteur ; y++)
 				liberer(x, y);
 		}
+		
+		for(Tank tank : tanks)
+			tank.frapper(position, force);
 		
 		repaint();
 	}
@@ -219,12 +224,5 @@ public class Sol implements Affichable {
 	 */
 	public int recYTaille() {
 		return yTaille;
-	}
-
-	@Override
-	public void changerComposableElementsGraphiques(ComposableElementsGraphiques composable) {
-		this.composable.supprimerElementGraphique(maillon);
-		this.composable = composable;
-		maillon = composable.ajouterElementGraphique(this);
 	}
 }
