@@ -16,14 +16,9 @@ import Tanks.EcouteurTir;
  */
 public class Missile extends GereComposable implements Affichable {
 	
-	private Sol sol;
 	private Position position;
-	private double angle;
-	private double vitesse;
 	final long pas = 10; // Nombre de millisecondes entre chaque cran.
-	
 	private Type type;
-	
 	private double gravite = 3;
 	
 	/**
@@ -36,12 +31,9 @@ public class Missile extends GereComposable implements Affichable {
 	 * @param ecouteurTir
 	 * @param type 
 	 */
-	public Missile(ComposableElementsGraphiques composable, Sol sol, Position position, double angle, double vitesse, EcouteurTir ecouteurTir, Type type) {
+	public Missile(ComposableElementsGraphiques composable, Sol sol, double vent, Position position, double angle, double vitesse, EcouteurTir ecouteurTir, Type type) {
 		super(composable);
-		this.sol = sol;
 		this.position = position;
-		this.angle = angle;
-		this.vitesse = vitesse;
 		this.type = type;
 		
 		marquerInvalide();
@@ -73,9 +65,9 @@ public class Missile extends GereComposable implements Affichable {
 								
 							};
 							
-							new Missile(composable, sol, Missile.this.position, 0, xVitesse, ecouteurTirInterne, CanonBasic.Type.TIERS);
-							new Missile(composable, sol, Missile.this.position, Math.PI/12f, xVitesse, ecouteurTirInterne, CanonBasic.Type.TIERS);
-							new Missile(composable, sol, Missile.this.position, Math.PI/6f, xVitesse, ecouteurTirInterne, CanonBasic.Type.TIERS);
+							new Missile(composable, sol, vent, Missile.this.position, 0, xVitesse, ecouteurTirInterne, CanonBasic.Type.TIERS);
+							new Missile(composable, sol, vent, Missile.this.position, Math.PI/12f, xVitesse, ecouteurTirInterne, CanonBasic.Type.TIERS);
+							new Missile(composable, sol, vent, Missile.this.position, Math.PI/6f, xVitesse, ecouteurTirInterne, CanonBasic.Type.TIERS);
 							
 							supprimerComposable();
 							marquerInvalide();
@@ -96,6 +88,7 @@ public class Missile extends GereComposable implements Affichable {
 						Missile.this.position = new Position((int)x, (int)y);
 						
 						yVitesse += gravite;
+						xVitesse += vent;
 					}
 					
 					composable.marquerInvalide();
@@ -122,6 +115,6 @@ public class Missile extends GereComposable implements Affichable {
 
 	@Override
 	public void afficher(Graphics g) {
-		g.fillOval(position.recX(), position.recY(), 5, 5);
+		g.fillOval(position.recX(), position.recY(), 8, 8);
 	}
 }

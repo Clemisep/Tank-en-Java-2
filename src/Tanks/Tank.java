@@ -15,7 +15,7 @@ public interface Tank extends Affichable, CanonBougeable {
 	 */
 	public int deplacer(int sens);
 	
-	public void tirer(double force, EcouteurTir ecouteurTir);
+	public void tirer(double force, EcouteurTir ecouteurTir, double vent);
 	
 	/**
 	 * Bouge le canon pour viser.
@@ -34,7 +34,27 @@ public interface Tank extends Affichable, CanonBougeable {
 	 */
 	public void frapper(Position position, int rayon, int force);
 	
+	public boolean estVivant();
+	
 	public Equipe recEquipe();
 
+	/**
+	 * Change le canon du tank.
+	 */
 	public void canonSuivant();
+
+	/**
+	 * Indique au tank qu'il est actif.
+	 */
+	public void focaliser();
+	
+	/**
+	 * Indique au tank qu'il n'est pas actif.
+	 */
+	public void defocaliser();
+	
+	/**
+	 * @return Vrai s'il reste des munitions, false sinon.
+	 */
+	public boolean resteMunitions();
 }

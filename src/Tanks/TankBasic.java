@@ -27,6 +27,7 @@ public class TankBasic extends GereComposable implements Tank {
 	private int vie;
 	private Equipe equipe;
 	private final BufferedImage imageTank;
+	private boolean focalise = false;
 	
 	private final int abscisseMilieuAppui;
 	private final Sol sol;
@@ -199,8 +200,8 @@ public class TankBasic extends GereComposable implements Tank {
 	}
 
 	@Override
-	public void tirer(double force, EcouteurTir ecouteurTir) {
-		armes.recCanonActuel().tirer(sol, new Position(accrocheTank.recX()+position.recX(), accrocheTank.recY()+position.recY()), force, recComposable(), ecouteurTir);
+	public void tirer(double force, EcouteurTir ecouteurTir, double vent) {
+		armes.recCanonActuel().tirer(sol, vent, new Position(accrocheTank.recX()+position.recX(), accrocheTank.recY()+position.recY()), force, recComposable(), ecouteurTir);
 	}
 	
 	@Override
@@ -210,12 +211,43 @@ public class TankBasic extends GereComposable implements Tank {
 
 	@Override
 	public void afficher(Graphics g) {
+		// Affichage du tank
+		g.drawImage(imageTank, position.recX(), position.recY(), null);
 		
-		g.drawImage(imageTank, position.recX(), position.recY(), null); // Affichage du tank
-		armes.recCanonActuel().afficherCanon(g, new Position(position.recX()+accrocheTank.recX(), position.recY()+accrocheTank.recY())); // Affichage du canon
+		// Affichage du canon
+		armes.recCanonActuel().afficherCanon(g, new Position(position.recX()+accrocheTank.recX(), position.recY()+accrocheTank.recY()));
 		
+		// Affichage de la barre de vie.
 		g.setColor(Color.ORANGE);
-		g.fillRect(position.recX()+abscisseMilieuAppui-vie/2, position.recY()-10, vie, 5);
+		int milieu = position.recX()+abscisseMilieuAppui;
+		g.fillRect(milieu-vie/2, position.recY()-10, vie, 5);
+		
+		// Affichage du nombre de munitions.
+		g.setColor(Color.RED);
+		int nombreMunitions = armes.recCanonActuel().recNombreMunitions();
+		
+		int largeur = 10;
+		int ecart = 4;
+		int hauteur = 8;
+		
+		if(nombreMunitions >= 0) {
+			int largeurTotale = (largeur+ecart)*nombreMunitions;
+			
+			for(int x=0 ; x<nombreMunitions ; x++) {
+				g.fillRect(milieu - largeurTotale/2 + x*(largeur+ecart), position.recY() - 15 - hauteur, largeur, hauteur);
+			}
+		} else {
+			int largeurTotale = (ecart+largeur)*5;
+			g.fillRect(milieu - largeurTotale/2, position.recY() - 15 - hauteur, largeurTotale, hauteur);
+		}
+		
+		// Si le tank activé est celui-ci, on affiche des pointillés en dessous.
+		if(focalise) {
+			g.setColor(Color.BLACK);
+			int y = position.recY()+imageTank.getWidth();
+			for(int i=-imageTank.getWidth()/2 ; i<imageTank.getWidth()/2 ; i+=5)
+				g.fillRect(milieu+i, y, 3, 3);
+		}
 	}
 
 	@Override
@@ -245,12 +277,28 @@ public class TankBasic extends GereComposable implements Tank {
 	public Equipe recEquipe() {
 		return equipe;
 	}
-
+	
 	@Override
 	public void canonSuivant() {
-		System.out.println("changement");
 		armes.canonSuivant();
 		marquerInvalide();
+	}
+	
+	@Override
+	public void focaliser() {
+		focalise = true;
+		marquerInvalide();
+	}
+	
+	@Override
+	public void defocaliser() {
+		focalise = false;
+		marquerInvalide();
+	}
+	
+	@Override
+	public boolean resteMunitions() {
+		return armes.recCanonActuel().recNombreMunitions() != 0;
 	}
 
 }

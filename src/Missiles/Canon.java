@@ -31,5 +31,7 @@ public interface Canon extends CanonBougeable {
 	 * @param repaintListener
 	 * @return Vrai si un projectile a pu être lancé, faux sinon.
 	 */
-	public boolean tirer(Sol sol, Position position, double vitesse, ComposableElementsGraphiques composable, EcouteurTir ecouteurTir);
+	public boolean tirer(Sol sol, double vent, Position position, double vitesse, ComposableElementsGraphiques composable, EcouteurTir ecouteurTir);
+	
+	public int recNombreMunitions();
 }

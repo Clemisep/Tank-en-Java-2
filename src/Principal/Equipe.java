@@ -10,6 +10,10 @@ public class Equipe {
 		this.nomEquipe = nomEquipe;
 	}
 	
+	public void modNombreDeTanks(int nombreDeTanks) {
+		this.nombreDeTanks = nombreDeTanks;
+	}
+	
 	/**
 	 * À appeler lorsque l’équipe vient de voir un de ses joueurs mourir.
 	 */

@@ -121,7 +121,7 @@ public class CanonBasic implements Canon {
 	}
 	
 	@Override
-	public boolean tirer(Sol sol, Position position, double vitesse, ComposableElementsGraphiques composable, EcouteurTir ecouteurTir) {
+	public boolean tirer(Sol sol, double vent, Position position, double vitesse, ComposableElementsGraphiques composable, EcouteurTir ecouteurTir) {
 		if(munitions == 0) return false; // S'il n'y a plus de munitions, on ne peut pas tirer.
 		
 		munitions = Math.max(-1, munitions-1);
@@ -147,14 +147,19 @@ public class CanonBasic implements Canon {
 		int boutCanonX = (int) (position.recX()+x);
 		int boutCanonY = (int) (position.recY()+y);
 		
-		Missile missile = new Missile(
+		new Missile(
 				composable,
 				sol,
+				vent,
 				new Position(boutCanonX, boutCanonY),
 				angleCanon, vitesse, ecouteurTir, type
 				);
 		
 		// TODO S'occuper du tir
 		return true;
+	}
+	
+	public int recNombreMunitions() {
+		return munitions;
 	}
 }

@@ -2,6 +2,8 @@ package Principal;
 
 
 import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Insets;
 import java.awt.Toolkit;
 
 import javax.swing.JFrame;
@@ -11,21 +13,23 @@ public class FenetreJeu extends JFrame {
 	
 	private static final long serialVersionUID = 1L;
 	
-	//private CardLayout gestionnaire;
-	
 	public FenetreJeu() {
-		setLocation(0, 0);
-		setSize(Toolkit.getDefaultToolkit().getScreenSize());
-		getContentPane().add(new PanneauMenu(getSize(), this));
+		// Place et maximise la fenêtre
+		Toolkit kit =  Toolkit.getDefaultToolkit(); 
+		Insets insets = kit.getScreenInsets(getGraphicsConfiguration()); 
+		Dimension screen = kit.getScreenSize(); 
 		
-		/*
+		int w = (int)(screen.getWidth()-insets.left-insets.right); 
+		int h = (int)(screen.getHeight()-insets.top-insets.bottom); 
+		int x = (int)(insets.left); 
+		int y = (int)(insets.top); 
+		Dimension dimension = new Dimension(w,h); 
+		setSize(dimension); 
+		setLocation(x,y);
+		
+		// Ajout du panneau
 		Container contenu = getContentPane();
-		gestionnaire = new CardLayout();
-		contenu.setLayout(new CardLayout());
-		gestionnaire.addLayoutComponent(new PanneauMenu(getSize(), this), "menu");
-		gestionnaire.show(contenu, "menu");
-		
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);*/
+		contenu.add(new PanneauMenu(dimension, this));
 	}
 	
 	/**
@@ -39,9 +43,6 @@ public class FenetreJeu extends JFrame {
 		contenu.validate();
 		panneau.requestFocusInWindow();
 		repaint();
-		
-		/*gestionnaire.addLayoutComponent(panneau, "jeu");
-		gestionnaire.show(getContentPane(), "jeu");*/
 	}
 	
 }

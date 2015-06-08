@@ -1,5 +1,6 @@
 package Principal;
 
+import java.awt.Color;
 import java.awt.Graphics;
 
 public class ThreadPuissanceTir extends GereComposable implements Runnable {
@@ -7,7 +8,7 @@ public class ThreadPuissanceTir extends GereComposable implements Runnable {
 	private int larg;
 	private int haut;
 	private double puissance = 0;
-	private final double maxPuissance = 500f;
+	private final double maxPuissance = 700f;
 	private final double pas = 5;
 	private Thread thread=null;
 	
@@ -34,7 +35,7 @@ public class ThreadPuissanceTir extends GereComposable implements Runnable {
 			while(puissance <= maxPuissance) {
 				puissance += pas;
 				recComposable().marquerInvalide();
-				Thread.sleep(20);
+				Thread.sleep(15);
 			}
 		} catch(InterruptedException e) {
 			
@@ -47,6 +48,7 @@ public class ThreadPuissanceTir extends GereComposable implements Runnable {
 
 	@Override
 	public void afficher(Graphics g) {
+		g.setColor(Color.RED);
 		g.fillRect(position.recX(), position.recY(), (int)(larg*puissance/maxPuissance), haut);
 	}
 	

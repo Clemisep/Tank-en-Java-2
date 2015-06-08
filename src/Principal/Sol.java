@@ -6,32 +6,41 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
+import java.io.File;
+import java.io.IOException;
 import java.util.Random;
 
+import javax.imageio.ImageIO;
+
 import Tanks.Tank;
-import Ensemble.Maillon;
 
 public class Sol extends GereComposable implements Affichable {
 	
 	private final int xTaille, yTaille;
 	private BufferedImage image;
-	private Color couleurTerrain = Color.GREEN, couleurPlan = Color.BLUE;
+	private Color couleurTerrain = new Color(39, 176, 55), couleurPlan = new Color(0,0,0,0);
+	
+	private final BufferedImage ciel;
 	
 	private final int minAltitudePointeBord;
 	private final int maxAltitudePointeBord;
 	private final int minAltitudePointeMilieu;
 	private final int maxAltitudePointeMilieu;
-	/*private final int minAltitudeColBord;
-	private final int maxAltitudeColBord;
-	private final int minAltitudeColMilieu;
-	private final int maxAltitudeColMilieu;*/
 	private Tank[] tanks = {};
-	
-	//private final int minAltitudePointeBord;
 	
 	public Sol(Dimension dimension, ComposableElementsGraphiques composable) {
 		
 		super(composable);
+		
+		BufferedImage cielLocal;
+		
+		try {
+			cielLocal = ImageIO.read(new File("src/Images/ciel.png"));
+		} catch(IOException e) {
+			cielLocal = null;
+		}
+		
+		ciel = cielLocal;
 		
 		xTaille = dimension.width;
 		yTaille = dimension.height;
@@ -39,8 +48,9 @@ public class Sol extends GereComposable implements Affichable {
 		{
 			byte[] R = {(byte)couleurTerrain.getRed(),   (byte)couleurPlan.getRed()},
 				   G = {(byte)couleurTerrain.getGreen(), (byte)couleurPlan.getGreen()},
-				   B = {(byte)couleurTerrain.getBlue(),  (byte)couleurPlan.getBlue()};
-			image = new BufferedImage(xTaille, yTaille, BufferedImage.TYPE_BYTE_BINARY, new IndexColorModel(2, 2, R, G, B));
+				   B = {(byte)couleurTerrain.getBlue(),  (byte)couleurPlan.getBlue()},
+				   A = {(byte)couleurTerrain.getAlpha(), (byte)couleurPlan.getAlpha()};
+			image = new BufferedImage(xTaille, yTaille, BufferedImage.TYPE_BYTE_BINARY, new IndexColorModel(2, 2, R, G, B, A));
 		}
 		
 		dessinerRectangle(0, xTaille, 0, yTaille, false);
@@ -49,10 +59,6 @@ public class Sol extends GereComposable implements Affichable {
 		maxAltitudePointeBord = yTaille/3;
 		minAltitudePointeMilieu = 2*yTaille/3;
 		maxAltitudePointeMilieu = 3*yTaille/4;
-		/*minAltitudeColBord = yTaille/10;
-		maxAltitudeColBord = yTaille/8;
-		minAltitudeColMilieu = yTaille/2;
-		maxAltitudeColMilieu = 3*yTaille/5;*/
 		
 		Random hasard = new Random();
 		
@@ -104,21 +110,12 @@ public class Sol extends GereComposable implements Affichable {
 	private boolean estAuCentre(int x) {
 		return x >= xTaille/3 && x <= xTaille*2/3;
 	}
-	/*
-	private int recMinAltitudeCol(int x) {
-		return estAuCentre(x) ? minAltitudeColMilieu : minAltitudeColBord;
-	}
-	
-	private int recMaxAltitudeCol(int x) {
-		return estAuCentre(x) ? maxAltitudeColMilieu : maxAltitudeColBord;
-	}*/
 	
 	private int randInt(Random hasard, int min, int max) {
 		return min + hasard.nextInt(max-min);
 	}
 	
 	private void dessinerVerticaleTerrain(int x, int hauteur) {
-		//System.out.println("Verticale " + x + ", " + hauteur);
 		try {
 			int rgb = couleurTerrain.getRGB();
 			for(int y=yTaille-hauteur ; y<yTaille ; y++)
@@ -146,6 +143,9 @@ public class Sol extends GereComposable implements Affichable {
 	}
 	
 	public void afficher(Graphics g) {
+		
+		g.drawImage(ciel, 0, 0, xTaille, yTaille, null);
+		
 		Graphics2D g2 = (Graphics2D) g;
 		g2.drawImage(image, null, null);
 	}
