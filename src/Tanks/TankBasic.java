@@ -252,19 +252,21 @@ public class TankBasic extends GereComposable implements Tank {
 
 	@Override
 	public void frapper(Position c, int rayon, int force) {
-		for(Position p : ensembleContour) {
-			int dx = position.recX() + p.recX() - c.recX();
-			int dy = position.recY() + p.recY() - c.recY();
-			if(dx*dx+dy*dy <= rayon*rayon) {
-				vie = Math.max(0, vie-force);
-				if(vie == 0) {
-					TankBasic.this.supprimerComposable();
-					equipe.perdreTank();
-				} else {
-					descendre();
+		if(vie != 0) {
+			for(Position p : ensembleContour) {
+				int dx = position.recX() + p.recX() - c.recX();
+				int dy = position.recY() + p.recY() - c.recY();
+				if(dx*dx+dy*dy <= rayon*rayon) {
+					vie = Math.max(0, vie-force);
+					if(vie == 0) {
+						TankBasic.this.supprimerComposable();
+						equipe.perdreTank();
+					} else {
+						descendre();
+					}
+					marquerInvalide();
+					return;
 				}
-				marquerInvalide();
-				return;
 			}
 		}
 	}
